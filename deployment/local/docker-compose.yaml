@@ -19,6 +19,26 @@ services:
     networks:
       - main_network
 
+  events:
+    container_name: "app_events"
+    build:
+      context: ../../backend/srv/events
+      dockerfile: ../../../deployment/Dockerfile
+    restart: always
+    environment:
+      GWM_DB_HOST: db
+      GWM_DB_PORT: 5432
+      GWM_DB_NAME: postgres
+      GWM_DB_USER: user
+      GWM_DB_PASSWORD: user
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - main_network
+
 networks:
   main_network:
     driver: bridge
