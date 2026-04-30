@@ -21,10 +21,21 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry install --no-root --without dev
 
+FROM base AS development
 COPY . .
+EXPOSE 8000
 
-ENV PYTHONPATH=/app:/app/src
+CMD ["uvicorn", "events.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+FROM base AS production
+
+COPY . .
 
 EXPOSE 8000
 
-CMD ["uvicorn", "events.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["gunicorn", "events.main:app", \
+     "--workers", "4", \
+     "--worker-class", "uvicorn.workers.UvicornWorker", \
+     "--bind", "0.0.0.0:8000", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-"]

@@ -24,6 +24,7 @@ services:
     build:
       context: ../../backend/srv/events
       dockerfile: ../../../deployment/Dockerfile
+      target: development
     restart: always
     environment:
       GWM_DB_HOST: db
@@ -33,6 +34,8 @@ services:
       GWM_DB_PASSWORD: user
     ports:
       - "8000:8000"
+    volumes:
+      - ../../backend/srv/events:/app
     depends_on:
       db:
         condition: service_healthy
