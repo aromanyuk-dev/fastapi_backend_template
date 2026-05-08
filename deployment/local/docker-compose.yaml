@@ -2,7 +2,7 @@ services:
   db:
     container_name: "app_db"
     image: postgres:16
-    restart: always
+    restart: no
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: user
@@ -30,15 +30,14 @@ services:
       - users
     networks:
       - main_network
-    restart: unless-stopped
-
+    restart: no
   users:
     container_name: "app_users"
     build:
       context: ../../backend/srv/users
       dockerfile: ../../../deployment/Dockerfile
       target: development
-    restart: always
+    restart: no
     environment:
       DB_HOST: db
       DB_PORT: 5432
